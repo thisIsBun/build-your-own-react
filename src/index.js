@@ -20,8 +20,23 @@ function createTextElement(text) {
   };
 }
 
+function render(element, container) {
+  const dom =
+    element.type === "TEXT_ELEMENT"
+      ? document.createTextNode("")
+      : document.createElement(element.type);
+
+  Object.keys(element.props)
+    .filter((key) => key !== "children")
+    .forEach((key) => (dom[key] = element.props[key]));
+
+  element.props.children.forEach((child) => render(child, dom));
+  container.appendChild(dom);
+}
+
 const Didact = {
   createElement,
+  render,
 };
 
 /** @jsx Didact.createElement */
@@ -31,3 +46,6 @@ const element = (
     <p class="summary">You can find my thoughts here.</p>
   </div>
 );
+
+const container = document.getElementById('root')
+render(element, container)
